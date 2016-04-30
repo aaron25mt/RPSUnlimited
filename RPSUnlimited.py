@@ -9,8 +9,12 @@ class Result(Enum):
 	win = 1
 
 def loadMoves(filename):
-	with open(filename, "r") as fileObj:
-		moves = [line.strip().split(',') for line in fileObj]
+	try:
+		with open(filename, "r") as fileObj:
+			moves = [line.strip().split(',') for line in fileObj]
+	except IOError:
+		print("{} is not a valid file or not in the current working directory".format(FILENAME))
+		exit(-1)
 	return moves
 
 def createGameName(moves):
@@ -51,20 +55,20 @@ def main():
 				else:
 					break
 		player1 = moves[choice - 1][0]
-		player2 = moves[randrange(0, len(moves) - 1)][0]
-		print("\n{} vs. {}...".format(player1, player2))
-		result = doesXBeatY(moves[choice - 1], player1, player2)
+		computer = moves[randrange(0, len(moves) - 1)][0]
+		print("\n{} vs. {}...".format(player1, computer))
+		result = doesXBeatY(moves[choice - 1], player1, computer)
 		if(result == Result.win):
 			score += Result.win.value
 			print("{} wins!".format(player1))
 		elif(result == Result.lose):
 			score += Result.lose.value
-			print("{} wins!".format(player2))
+			print("{} wins!".format(computer))
 		else:
 			score += Result.tie.value
 			print("Tie.")
 		print("\nYour score is {}!".format(score))
-		playAgain = input("Do you want to play again? (Y/N) ")
+		playAgain = input("Do you want to play again? (Y/N) ").upper()
 		if(playAgain == "N"):
 			break
 
